@@ -52,7 +52,7 @@
 
   // 設定は両環境ともlocalStorage
   window.Settings = {
-    data: Object.assign({ speed: 5, volume: 8 }, JSON.parse(localStorage.getItem('rg-settings') || '{}')),
+    data: Object.assign({ speed: 5, volume: 8, tap: 4 }, JSON.parse(localStorage.getItem('rg-settings') || '{}')),
     save() { localStorage.setItem('rg-settings', JSON.stringify(this.data)); },
   };
 })();

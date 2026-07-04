@@ -35,6 +35,36 @@ class AudioEngine {
     if (this.gain) this.gain.gain.value = v01;
   }
 
+  setTapVolume(v01) {
+    this.tapVol = v01;
+  }
+
+  // タップ効果音（レーンごとに音程が変わるピアノ風の短い音）
+  tap(lane = 3) {
+    if (!this.tapVol || this.tapVol <= 0) return;
+    const ctx = this.ensureCtx();
+    const t = ctx.currentTime;
+    // Cメジャーペンタトニック: ド レ ミ ソ ラ ド レ
+    const freq = [261.63, 293.66, 329.63, 392.0, 440.0, 523.25, 587.33][lane] || 440;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(this.tapVol, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+    const o1 = ctx.createOscillator();
+    o1.type = 'sine';
+    o1.frequency.value = freq;
+    const o2 = ctx.createOscillator();
+    o2.type = 'triangle';
+    o2.frequency.value = freq * 2;
+    const g2 = ctx.createGain();
+    g2.gain.value = 0.35; // 倍音は控えめに
+    o1.connect(g);
+    o2.connect(g2);
+    g2.connect(g);
+    g.connect(ctx.destination); // BGM音量とは独立
+    o1.start(t); o2.start(t);
+    o1.stop(t + 0.25); o2.stop(t + 0.25);
+  }
+
   // offset秒から再生。leadIn秒だけ待ってから曲が始まる（負のoffset相当）
   play(offset = 0, leadIn = 0) {
     this.ensureCtx();

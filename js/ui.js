@@ -199,12 +199,14 @@
   $('btn-result-back').onclick = () => { refreshSongs().then(() => show('screen-songs')); };
 
   // 設定
-  const setSpeed = $('set-speed'), setVol = $('set-volume');
+  const setSpeed = $('set-speed'), setVol = $('set-volume'), setTap = $('set-tap');
   function syncSettingsUI() {
     setSpeed.value = window.Settings.data.speed;
     setVol.value = window.Settings.data.volume;
+    setTap.value = window.Settings.data.tap;
     $('speed-val').textContent = Number(window.Settings.data.speed).toFixed(1);
     $('volume-val').textContent = Number(window.Settings.data.volume).toFixed(1);
+    $('tap-val').textContent = Number(window.Settings.data.tap).toFixed(1);
   }
   $('btn-settings').onclick = () => { syncSettingsUI(); $('settings-modal').classList.remove('hidden'); };
   $('btn-settings-close').onclick = () => $('settings-modal').classList.add('hidden');
@@ -213,6 +215,12 @@
     window.Settings.data.volume = Number(setVol.value);
     window.Settings.save(); syncSettingsUI();
     window.audioEngine.setVolume(window.Settings.data.volume / 10);
+  };
+  setTap.oninput = () => {
+    window.Settings.data.tap = Number(setTap.value);
+    window.Settings.save(); syncSettingsUI();
+    window.audioEngine.setTapVolume((window.Settings.data.tap / 10) * 0.5);
+    window.audioEngine.tap(3); // 試し鳴り
   };
 
   // ---- 管理者機能（Electronのみ。PWAビルドにはこのUI自体が現れない） ----
