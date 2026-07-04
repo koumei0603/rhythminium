@@ -134,6 +134,11 @@ body {
 .modal-title { font-size: 24px; letter-spacing: .3em; color: #e8e2d5; margin-bottom: 6px; }
 .modal-box label { font-size: 14px; letter-spacing: .1em; color: #9a917f; text-align: left; }
 .modal-box input[type=range] { width: 100%; margin-top: 10px; accent-color: #cfc7b5; }
+.modal-box select {
+  display: block; width: 100%; margin-top: 10px;
+  font-family: inherit; font-size: 14px; padding: 9px;
+  background: #0a0908; color: #e8e2d5; border: 1px solid #4a453a; border-radius: 4px;
+}
 
 /* ---- プレイ画面 ---- */
 #screen-game { background: #000; }

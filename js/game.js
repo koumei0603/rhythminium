@@ -49,6 +49,7 @@
     hudCombo.textContent = '';
     window.audioEngine.setVolume(window.Settings.data.volume / 10);
     window.audioEngine.setTapVolume((window.Settings.data.tap / 10) * 0.5); // 控えめな音量レンジ
+    window.audioEngine.setTapSound(window.Settings.data.tapSound);
     window.audioEngine.setRate(1); // プレイは常に等速（エディタのスロー設定を引き継がない）
     window.audioEngine.play(0, LEAD_IN);
     window.audioEngine.onended = () => { if (st && !st.paused) setTimeout(tryFinish, 600); };
@@ -74,7 +75,7 @@
     if (!st || st.paused) return;
     const now = window.audioEngine.time();
     st.laneFlash[lane] = 1;
-    window.audioEngine.tap(lane); // 押した手応えの効果音（空振りでも鳴る=ピアノの鍵盤と同じ）
+    window.audioEngine.tap(); // 押した手応えの効果音（全レーン同じ音。空振りでも鳴る）
     let best = null, bestDt = Infinity;
     for (const n of st.notes) {
       if (n.judged || n.lane !== lane) continue;

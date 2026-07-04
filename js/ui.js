@@ -199,11 +199,12 @@
   $('btn-result-back').onclick = () => { refreshSongs().then(() => show('screen-songs')); };
 
   // 設定
-  const setSpeed = $('set-speed'), setVol = $('set-volume'), setTap = $('set-tap');
+  const setSpeed = $('set-speed'), setVol = $('set-volume'), setTap = $('set-tap'), setTapSound = $('set-tapsound');
   function syncSettingsUI() {
     setSpeed.value = window.Settings.data.speed;
     setVol.value = window.Settings.data.volume;
     setTap.value = window.Settings.data.tap;
+    setTapSound.value = window.Settings.data.tapSound;
     $('speed-val').textContent = Number(window.Settings.data.speed).toFixed(1);
     $('volume-val').textContent = Number(window.Settings.data.volume).toFixed(1);
     $('tap-val').textContent = Number(window.Settings.data.tap).toFixed(1);
@@ -220,7 +221,14 @@
     window.Settings.data.tap = Number(setTap.value);
     window.Settings.save(); syncSettingsUI();
     window.audioEngine.setTapVolume((window.Settings.data.tap / 10) * 0.5);
-    window.audioEngine.tap(3); // 試し鳴り
+    window.audioEngine.tap(); // 試し鳴り
+  };
+  setTapSound.onchange = () => {
+    window.Settings.data.tapSound = setTapSound.value;
+    window.Settings.save();
+    window.audioEngine.setTapVolume((window.Settings.data.tap / 10) * 0.5);
+    window.audioEngine.setTapSound(setTapSound.value);
+    window.audioEngine.tap(); // 試し鳴り
   };
 
   // ---- 管理者機能（Electronのみ。PWAビルドにはこのUI自体が現れない） ----
