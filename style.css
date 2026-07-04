@@ -1,0 +1,213 @@
+/* ---- DEEMO風: 黒基調・セピア・セリフ体 ---- */
+* { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
+body {
+  font-family: Georgia, 'Times New Roman', 'Yu Mincho', serif;
+  color: #e8e2d5;
+}
+
+.screen { position: absolute; inset: 0; display: none; }
+.screen.active { display: block; }
+.hidden { display: none !important; }
+
+/* ---- タイトル ---- */
+#screen-title {
+  background: radial-gradient(ellipse at 50% 35%, #1a1712 0%, #000 75%);
+  cursor: pointer;
+}
+.title-art {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 18px;
+}
+#title-mascot {
+  height: min(34vh, 300px);
+  filter: drop-shadow(0 0 26px rgba(240, 230, 200, .3)) drop-shadow(0 10px 18px rgba(0, 0, 0, .7));
+  animation: float 4.5s ease-in-out infinite;
+}
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.title-logo {
+  font-size: clamp(42px, 8vw, 92px);
+  letter-spacing: 0.18em;
+  color: #f2ecdf;
+  text-shadow: 0 0 30px rgba(240, 230, 200, .25);
+}
+.title-sub { letter-spacing: .35em; color: #8a8171; font-size: clamp(10px, 1.6vw, 15px); }
+.title-start {
+  margin-top: 6vh; letter-spacing: .45em; color: #b7ae9c;
+  font-size: clamp(13px, 2vw, 19px);
+  animation: breathe 2.6s ease-in-out infinite;
+}
+@keyframes breathe { 0%,100% { opacity: .25; } 50% { opacity: 1; } }
+.title-keys { display: flex; margin-top: 8vh; height: 60px; align-items: flex-start; }
+.title-keys span { width: 34px; height: 60px; background: linear-gradient(#efe9dc, #cfc7b5); border: 1px solid #2a2620; border-radius: 0 0 3px 3px; }
+.title-keys span.k-b { width: 22px; height: 38px; background: linear-gradient(#2c2822, #0a0908); margin: 0 -11px; z-index: 2; }
+
+/* ---- 曲選択 ---- */
+#screen-songs {
+  background:
+    radial-gradient(ellipse at 80% 100%, rgba(60, 55, 45, .35) 0%, transparent 60%),
+    linear-gradient(160deg, #14120e 0%, #060504 100%);
+}
+.songs-layout { display: flex; height: 100%; }
+.songs-left { width: 42%; min-width: 300px; padding: 4vh 0 4vh 4vw; display: flex; flex-direction: column; }
+.songs-header { font-size: 30px; letter-spacing: .3em; color: #cfc7b5; margin-bottom: 3vh; }
+#song-list { list-style: none; overflow-y: auto; flex: 1; padding-right: 12px; }
+#song-list li {
+  padding: 14px 18px; margin-bottom: 4px; cursor: pointer;
+  letter-spacing: .12em; font-size: 17px; color: #9a917f;
+  border-left: 2px solid transparent;
+  transition: all .18s;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+#song-list li:hover { color: #e8e2d5; background: rgba(255, 250, 235, .04); }
+#song-list li.selected {
+  color: #f5efe2; background: linear-gradient(90deg, rgba(255, 250, 235, .09), transparent);
+  border-left-color: #cfc7b5;
+}
+#song-list li .li-best { float: right; font-size: 13px; color: #7a725f; }
+#admin-bar { display: flex; gap: 10px; margin-top: 2vh; margin-left: 96px; flex-wrap: wrap; }
+
+.songs-right { flex: 1; display: flex; align-items: center; justify-content: center; padding: 4vh 4vw; position: relative; overflow: hidden; }
+#song-art {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  opacity: 0; transition: opacity .5s ease;
+}
+#song-art.visible { opacity: 1; }
+#song-art::after {
+  /* 文字の可読性を保つグラデーション（左と下を暗く） */
+  content: ''; position: absolute; inset: 0;
+  background:
+    linear-gradient(90deg, rgba(6,5,4,0.96) 0%, rgba(6,5,4,0.45) 30%, rgba(6,5,4,0.15) 60%, rgba(6,5,4,0.35) 100%),
+    linear-gradient(rgba(6,5,4,0.25) 0%, rgba(6,5,4,0.1) 45%, rgba(6,5,4,0.7) 100%);
+}
+#song-detail { text-align: center; max-width: 560px; width: 100%; position: relative; z-index: 1; }
+#song-detail .detail-title { text-shadow: 0 2px 18px rgba(0,0,0,.9), 0 0 24px rgba(240,230,200,.15); }
+#song-detail .detail-best, #song-detail .diff-chip { text-shadow: 0 1px 8px rgba(0,0,0,.9); }
+#song-detail .diff-chip { background: rgba(6,5,4,.45); }
+.detail-title { font-size: clamp(26px, 4vw, 44px); letter-spacing: .1em; color: #f2ecdf; margin-bottom: 3vh; text-shadow: 0 0 24px rgba(240,230,200,.15); }
+.diff-row { display: flex; gap: 12px; justify-content: center; margin-bottom: 2.5vh; }
+.diff-chip {
+  padding: 9px 22px; border: 1px solid #4a453a; border-radius: 20px; cursor: pointer;
+  letter-spacing: .15em; font-size: 14px; color: #8a8171; transition: all .18s;
+}
+.diff-chip:hover { border-color: #8a8171; color: #cfc7b5; }
+.diff-chip.selected { border-color: #e8e2d5; color: #f5efe2; background: rgba(255, 250, 235, .07); }
+.diff-chip.none { opacity: .3; cursor: default; }
+.detail-best { color: #b7ae9c; letter-spacing: .2em; font-size: 20px; min-height: 28px; margin-bottom: 3.5vh; }
+.detail-actions { display: flex; gap: 14px; justify-content: center; }
+.detail-admin { display: flex; gap: 10px; justify-content: center; margin-top: 4vh; flex-wrap: wrap; }
+.song-empty { color: #5a5445; letter-spacing: .25em; }
+
+/* ---- ボタン ---- */
+.btn {
+  font-family: inherit; font-size: 14px; letter-spacing: .12em;
+  color: #cfc7b5; background: rgba(255, 250, 235, .05);
+  border: 1px solid #4a453a; border-radius: 4px;
+  padding: 10px 20px; cursor: pointer; transition: all .18s;
+}
+.btn:hover { border-color: #b7ae9c; color: #f5efe2; background: rgba(255, 250, 235, .1); }
+.btn-big { font-size: 22px; padding: 14px 60px; letter-spacing: .3em; border-radius: 6px; }
+.btn-danger { border-color: #5a3030; color: #b07a7a; }
+.btn-danger:hover { border-color: #a05050; color: #d8a0a0; background: rgba(160, 60, 60, .1); }
+.round-btn {
+  width: 52px; height: 52px; border-radius: 50%;
+  font-size: 20px; color: #cfc7b5; background: rgba(255, 250, 235, .06);
+  border: 1px solid #4a453a; cursor: pointer; transition: all .18s;
+}
+.round-btn:hover { border-color: #b7ae9c; background: rgba(255, 250, 235, .12); }
+.corner-btns { position: absolute; left: 24px; bottom: 24px; display: flex; gap: 14px; }
+
+/* ---- モーダル ---- */
+.modal {
+  position: absolute; inset: 0; z-index: 50;
+  background: rgba(0, 0, 0, .75);
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-box {
+  background: linear-gradient(170deg, #1a1712, #0c0a08);
+  border: 1px solid #3a352c; border-radius: 8px;
+  padding: 40px 50px; min-width: 320px;
+  display: flex; flex-direction: column; gap: 22px; text-align: center;
+}
+.modal-title { font-size: 24px; letter-spacing: .3em; color: #e8e2d5; margin-bottom: 6px; }
+.modal-box label { font-size: 14px; letter-spacing: .1em; color: #9a917f; text-align: left; }
+.modal-box input[type=range] { width: 100%; margin-top: 10px; accent-color: #cfc7b5; }
+
+/* ---- プレイ画面 ---- */
+#screen-game { background: #000; }
+#game-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.game-hud {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 10;
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 14px 24px; pointer-events: none;
+  border-bottom: 1px solid rgba(232, 226, 213, .5);
+  background: linear-gradient(rgba(0,0,0,.5), transparent);
+}
+#hud-title { font-size: 21px; letter-spacing: .12em; color: #f2ecdf; }
+#hud-diff { font-size: 13px; letter-spacing: .15em; color: #c8b26a; margin-top: 3px; }
+.hud-right { text-align: right; }
+#hud-pct { font-size: 28px; letter-spacing: .08em; color: #f2ecdf; }
+#hud-combo { font-size: 14px; letter-spacing: .2em; color: #b7ae9c; min-height: 20px; margin-top: 2px; }
+
+.pause-btn {
+  position: absolute; top: 86px; right: 20px; z-index: 12;
+  font-size: 13px; opacity: .55;
+}
+.pause-btn:hover { opacity: 1; }
+
+/* ---- リザルト ---- */
+#screen-result {
+  background: radial-gradient(ellipse at 50% 30%, #1c1913 0%, #000 80%);
+  display: none; align-items: center; justify-content: center;
+}
+#screen-result.active { display: flex; }
+.result-box { text-align: center; }
+.result-title { font-size: 26px; letter-spacing: .15em; color: #b7ae9c; margin-bottom: 4vh; }
+.result-pct { font-size: clamp(56px, 10vw, 96px); letter-spacing: .05em; color: #f5efe2; text-shadow: 0 0 40px rgba(240,230,200,.25); }
+.result-new-best { color: #d8c27a; letter-spacing: .4em; margin-top: 10px; animation: breathe 1.6s infinite; }
+.result-counts { display: flex; gap: 34px; justify-content: center; margin: 5vh 0; color: #9a917f; letter-spacing: .1em; font-size: 15px; }
+.result-counts span { display: block; font-size: 26px; color: #e8e2d5; margin-top: 6px; }
+
+/* ---- エディタ ---- */
+#screen-editor { background: #0a0908; display: none; flex-direction: column; }
+#screen-editor.active { display: flex; }
+.editor-bar {
+  display: flex; gap: 10px; align-items: center; padding: 10px 14px;
+  background: #14120e; border-bottom: 1px solid #2a2620; flex-wrap: wrap;
+}
+.ed-title { letter-spacing: .1em; color: #e8e2d5; margin: 0 8px; }
+.ed-info { font-size: 12px; color: #6a6455; margin-left: auto; }
+#ed-diff, #ed-rate {
+  font-family: inherit; background: #1a1712; color: #cfc7b5;
+  border: 1px solid #4a453a; border-radius: 4px; padding: 8px;
+}
+#editor-canvas { flex: 1; width: 100%; touch-action: none; }
+
+/* ---- トースト ---- */
+.toast {
+  position: absolute; bottom: 34px; left: 50%; transform: translateX(-50%);
+  background: rgba(20, 18, 14, .95); border: 1px solid #4a453a; border-radius: 6px;
+  padding: 13px 28px; letter-spacing: .1em; font-size: 14px; color: #e8e2d5;
+  z-index: 100; transition: opacity .3s;
+}
+
+/* ---- スマホ（縦持ち・小画面） ---- */
+@media (max-width: 760px) {
+  .songs-layout { flex-direction: column; }
+  .songs-left { width: 100%; min-width: 0; padding: 3vh 5vw 0 5vw; max-height: 45%; }
+  .songs-right { padding: 2vh 5vw; }
+  .songs-header { font-size: 22px; margin-bottom: 1.5vh; }
+  #song-list li { padding: 11px 12px; font-size: 15px; }
+  .detail-title { margin-bottom: 2vh; }
+  .detail-best { margin-bottom: 2vh; }
+  .btn-big { font-size: 18px; padding: 12px 44px; }
+  .corner-btns { left: 14px; bottom: 14px; }
+  .round-btn { width: 44px; height: 44px; font-size: 16px; }
+  #hud-pct { font-size: 22px; }
+  #hud-title { font-size: 16px; }
+  .pause-btn { top: 70px; right: 12px; }
+  .result-counts { gap: 18px; font-size: 12px; }
+  .modal-box { padding: 28px 30px; min-width: 260px; max-width: 88vw; }
+}
