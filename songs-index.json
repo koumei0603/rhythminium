@@ -4,6 +4,7 @@
     "title": "Fallen Angel Lucifer _ 「明けの明星（光を掲げる者）」",
     "file": "song.mp3",
     "added": 1783173133019,
+    "thumb": "thumb.png",
     "charts": {
       "easy": {
         "level": 2,
@@ -16,6 +17,27 @@
       "hard": {
         "level": 10,
         "noteCount": 822
+      }
+    }
+  },
+  {
+    "id": "mr6g6oogdh",
+    "title": "手",
+    "file": "song.mp3",
+    "added": 1783174716019,
+    "thumb": "thumb.png",
+    "charts": {
+      "easy": {
+        "level": 2,
+        "noteCount": 202
+      },
+      "normal": {
+        "level": 7,
+        "noteCount": 465
+      },
+      "hard": {
+        "level": 11,
+        "noteCount": 836
       }
     }
   }
