@@ -309,6 +309,11 @@
   });
   // マルチタッチ（pointerdownは各指で発火するのでこれで対応済み）
 
+  // 指のスライドやダブルタップで画面がスクロール・ズームしないようにする
+  // （プレイ入力はpointerdownで拾うため、タッチの既定動作は全て抑止してよい）
+  canvas.addEventListener('touchstart', (e) => e.preventDefault(), { passive: false });
+  canvas.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+
   // ウィンドウが最小化・非表示になったら自動ポーズ（音だけ進む事故を防ぐ）
   document.addEventListener('visibilitychange', () => {
     if (document.hidden && !window.__testMode) pause();

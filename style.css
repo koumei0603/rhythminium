@@ -1,6 +1,6 @@
 /* ---- DEEMO風: 黒基調・セピア・セリフ体 ---- */
 * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; }
-html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #000; overscroll-behavior: none; }
 body {
   font-family: Georgia, 'Times New Roman', 'Yu Mincho', serif;
   color: #e8e2d5;
@@ -151,7 +151,7 @@ body {
 
 /* ---- プレイ画面 ---- */
 #screen-game { background: #000; }
-#game-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+#game-canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; }
 .game-hud {
   position: absolute; top: 0; left: 0; right: 0; z-index: 10;
   display: flex; justify-content: space-between; align-items: flex-start;

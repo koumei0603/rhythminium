@@ -106,28 +106,43 @@ def estimate_bpm(env, times):
 
 
 def assign_lanes(notes, lane_gap, rng):
-    """スペクトル重心（低音=左, 高音=右）に沿ってレーンを割り当てる。
-    直近の同一レーン連打は隣に逃がして叩きやすくする。"""
+    """レーン割当て。優先順位:
+    1. 同一レーン最小間隔（lane_gap）を守る
+    2. 適度なジグザグ移動（1〜3レーンの移動を好み、連打と大ジャンプを避ける）
+    3. 左右バランス（直近のノーツが片側に寄ったら反対側へ誘導）
+    4. 音の高さ（低音=左, 高音=右）は弱い傾向として反映
+    """
     cents = np.array([c for _, _, c in notes])
     qs = np.quantile(cents, np.linspace(0, 1, LANES + 1)[1:-1]) if len(cents) > LANES else []
+    center = (LANES - 1) / 2
+    # 移動距離ごとの好み: 隣〜3つ隣への移動が最も叩きやすい
+    move_pref = {0: -1.2, 1: 1.0, 2: 1.0, 3: 0.6, 4: -0.4, 5: -1.0, 6: -1.6}
     last_used = [-9.0] * LANES
     prev_lane = LANES // 2
+    recent = []  # 直近8ノーツのレーン
     out = []
     for t, s, c in notes:
-        lane = int(np.searchsorted(qs, c)) if len(qs) else rng.integers(0, LANES)
-        # 手の移動が飛びすぎないよう1ステップ縮める
-        if abs(lane - prev_lane) >= 4:
-            lane += -1 if lane > prev_lane else 1
-        # 同一レーンが近すぎるときは空いている近隣レーンへ
-        if t - last_used[lane] < lane_gap:
-            order = sorted(range(LANES), key=lambda l: (abs(l - lane), abs(l - prev_lane)))
-            for l in order:
-                if t - last_used[l] >= lane_gap:
-                    lane = l
-                    break
-        last_used[lane] = t
-        prev_lane = lane
-        out.append({'t': round(t, 3), 'lane': lane, '_s': s})
+        target = int(np.searchsorted(qs, c)) if len(qs) else int(center)
+        bias = (np.mean(recent) - center) / center if recent else 0.0  # +なら右寄り
+        best_lane, best_score = None, -1e9
+        for l in range(LANES):
+            if t - last_used[l] < lane_gap:
+                continue
+            score = move_pref[abs(l - prev_lane)]
+            score -= 1.5 * bias * (l - center) / center   # 偏った側と逆へ
+            score -= 0.20 * abs(l - target)               # 音高との対応（弱め）
+            score -= 0.35 * recent.count(l)               # 直近で使ったレーンは避けて全体に散らす
+            score += rng.uniform(0, 0.6)                  # 単調なパターン化を防ぐ
+            if score > best_score:
+                best_lane, best_score = l, score
+        if best_lane is None:  # 全レーンが埋まっている場合は最も古いレーンへ
+            best_lane = int(np.argmin(last_used))
+        last_used[best_lane] = t
+        prev_lane = best_lane
+        recent.append(best_lane)
+        if len(recent) > 8:
+            recent.pop(0)
+        out.append({'t': round(t, 3), 'lane': best_lane, '_s': s})
     return out
 
 
