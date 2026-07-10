@@ -8,15 +8,15 @@
     "charts": {
       "easy": {
         "level": 2,
-        "noteCount": 267
+        "noteCount": 268
       },
       "normal": {
         "level": 6,
-        "noteCount": 529
+        "noteCount": 531
       },
       "hard": {
         "level": 10,
-        "noteCount": 891
+        "noteCount": 894
       }
     }
   },
@@ -29,15 +29,36 @@
     "charts": {
       "easy": {
         "level": 2,
-        "noteCount": 214
+        "noteCount": 217
       },
       "normal": {
         "level": 7,
-        "noteCount": 429
+        "noteCount": 434
       },
       "hard": {
         "level": 11,
-        "noteCount": 707
+        "noteCount": 717
+      }
+    }
+  },
+  {
+    "id": "mrezzmexll",
+    "title": "EBON CHERUBIM -黒翼の智天使-",
+    "file": "song.mp3",
+    "added": 1783691708220,
+    "thumb": "thumb.png",
+    "charts": {
+      "easy": {
+        "level": 3,
+        "noteCount": 246
+      },
+      "normal": {
+        "level": 5,
+        "noteCount": 536
+      },
+      "hard": {
+        "level": 10,
+        "noteCount": 845
       }
     }
   }
