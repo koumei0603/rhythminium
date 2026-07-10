@@ -54,18 +54,27 @@ body {
 .songs-header { font-size: 30px; letter-spacing: .3em; color: #cfc7b5; margin-bottom: 3vh; }
 #song-list { list-style: none; overflow-y: auto; flex: 1; padding-right: 12px; }
 #song-list li {
+  display: flex; align-items: baseline; gap: 12px;
   padding: 14px 18px; margin-bottom: 4px; cursor: pointer;
   letter-spacing: .12em; font-size: 17px; color: #9a917f;
   border-left: 2px solid transparent;
   transition: all .18s;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+#song-list li .li-title { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 #song-list li:hover { color: #e8e2d5; background: rgba(255, 250, 235, .04); }
 #song-list li.selected {
   color: #f5efe2; background: linear-gradient(90deg, rgba(255, 250, 235, .09), transparent);
   border-left-color: #cfc7b5;
 }
-#song-list li .li-best { float: right; font-size: 13px; color: #7a725f; }
+#song-list li .li-best { flex: none; font-size: 13px; color: #7a725f; }
+
+/* スコアの数字: Georgiaのオールドスタイル数字は高さが揃わないため、
+   数字が水平に揃うライニング数字のフォントで表示する */
+.li-best, .detail-best, #hud-pct, .result-pct, .result-counts span {
+  font-family: 'Times New Roman', 'Georgia Pro', Georgia, serif;
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: 'lnum' 1, 'tnum' 1;
+}
 #admin-bar { display: flex; gap: 10px; margin-top: 2vh; margin-left: 96px; flex-wrap: wrap; }
 
 .songs-right { flex: 1; display: flex; align-items: center; justify-content: center; padding: 4vh 4vw; position: relative; overflow: hidden; }
@@ -199,7 +208,7 @@ body {
 }
 
 /* ---- スマホ（縦持ち・小画面） ---- */
-@media (max-width: 760px) {
+@media (max-width: 760px) and (orientation: portrait) {
   .songs-layout { flex-direction: column; }
   .songs-left { width: 100%; min-width: 0; padding: 3vh 5vw 0 5vw; max-height: 45%; }
   .songs-right { padding: 2vh 5vw; }
@@ -215,4 +224,36 @@ body {
   .pause-btn { top: 70px; right: 12px; }
   .result-counts { gap: 18px; font-size: 12px; }
   .modal-box { padding: 28px 30px; min-width: 260px; max-width: 88vw; }
+}
+
+/* ---- スマホ（横持ち・低い画面） ---- */
+@media (max-height: 520px) and (orientation: landscape) {
+  .songs-layout {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  .songs-left { width: 38%; min-width: 240px; padding: 2vh 0 2vh 3vw; }
+  .songs-header { font-size: 18px; margin-bottom: 1vh; }
+  #song-list li { padding: 8px 12px; font-size: 14px; }
+  #song-list li .li-best { font-size: 11px; }
+  .songs-right { padding: 2vh 3vw; }
+  .detail-title {
+    font-size: 20px; margin-bottom: 12px;
+    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
+  }
+  .diff-row { gap: 8px; margin-bottom: 10px; }
+  .diff-chip { padding: 5px 14px; font-size: 12px; }
+  .detail-best { font-size: 14px; min-height: 18px; margin-bottom: 12px; }
+  .btn-big { font-size: 16px; padding: 9px 36px; }
+  .corner-btns { left: calc(12px + env(safe-area-inset-left)); bottom: 10px; gap: 10px; }
+  .round-btn { width: 40px; height: 40px; font-size: 14px; }
+  #hud-pct { font-size: 22px; }
+  #hud-title { font-size: 16px; }
+  .pause-btn { top: 62px; right: calc(12px + env(safe-area-inset-right)); }
+  .result-title { margin-bottom: 2vh; }
+  .result-pct { font-size: clamp(40px, 14vh, 72px); }
+  .result-counts { gap: 20px; font-size: 12px; margin: 3vh 0; }
+  .result-counts span { font-size: 20px; }
+  .modal-box { padding: 20px 28px; gap: 12px; max-height: 92vh; overflow-y: auto; min-width: 300px; }
+  .modal-title { font-size: 18px; margin-bottom: 0; }
 }
