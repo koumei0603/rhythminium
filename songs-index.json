@@ -8,15 +8,15 @@
     "charts": {
       "easy": {
         "level": 2,
-        "noteCount": 196
+        "noteCount": 267
       },
       "normal": {
         "level": 6,
-        "noteCount": 524
+        "noteCount": 529
       },
       "hard": {
         "level": 10,
-        "noteCount": 822
+        "noteCount": 891
       }
     }
   },
@@ -29,15 +29,15 @@
     "charts": {
       "easy": {
         "level": 2,
-        "noteCount": 202
+        "noteCount": 214
       },
       "normal": {
         "level": 7,
-        "noteCount": 465
+        "noteCount": 429
       },
       "hard": {
         "level": 11,
-        "noteCount": 836
+        "noteCount": 707
       }
     }
   }
