@@ -71,7 +71,7 @@
     for (const s of songs) {
       const li = document.createElement('li');
       const bestAll = bestOf(s.id);
-      li.innerHTML = `${escapeHtml(s.title)}<span class="li-best">${bestAll ? bestAll.toFixed(2) + '%' : ''}</span>`;
+      li.innerHTML = `<span class="li-title">${escapeHtml(s.title)}</span><span class="li-best">${bestAll ? bestAll.toFixed(2) + '%' : ''}</span>`;
       li.onclick = () => selectSong(s);
       li.dataset.id = s.id;
       list.appendChild(li);
@@ -123,7 +123,7 @@
       row.appendChild(chip);
     }
     const b = bestOf(s.id, currentDiff);
-    $('detail-best').textContent = b != null ? `BEST ${b.toFixed(2)} %` : '';
+    $('detail-best').textContent = b != null ? `BEST ${b.toFixed(2)}%` : '';
   }
 
   function escapeHtml(t) {
