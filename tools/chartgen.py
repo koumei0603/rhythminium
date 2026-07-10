@@ -58,14 +58,28 @@ def onset_detect(y):
     env = flux.sum(axis=1)
     times = (np.arange(len(env)) + 1) * HOP / SR + (WIN / 2) / SR
 
-    # 適応しきい値（移動中央値）で局所ピークを拾う
-    med = median_filter(env, size=int(0.35 * SR / HOP) | 1)
-    thresh = med * 1.4 + 0.25 * env.mean()
-    localmax = env == maximum_filter(env, size=5)
-    cand = np.where((env > thresh) & localmax)[0]
-
-    # 静かなパートでも相対的な強さで選べるよう、局所正規化した強さも持つ
+    # 静かなパートでも相対的な強さで選べるよう、局所（約4秒）の水準を持つ
     loc = median_filter(env, size=int(4.0 * SR / HOP) | 1) + 1e-6
+
+    # 適応しきい値: 短期中央値×倍率 + 局所水準に応じた下限。
+    # ごく小さな全体平均項は完全無音での誤検出（ノイズ）除け。
+    med = median_filter(env, size=int(0.35 * SR / HOP) | 1)
+    floor = 0.15 * loc + 0.01 * env.mean()
+    localmax = env == maximum_filter(env, size=5)
+    cand = set(np.where((env > med * 1.4 + floor) & localmax)[0].tolist())
+
+    # 救済パス: オンセットが3秒以上途切れる区間（持続音のパッド等で
+    # ピークが埋もれやすい）は、より低いしきい値で拾い直す
+    ct = sorted(times[i] for i in cand)
+    bounds = [0.0] + ct + [float(times[-1])]
+    for t0, t1 in zip(bounds[:-1], bounds[1:]):
+        if t1 - t0 <= 3.0:
+            continue
+        i0, i1 = np.searchsorted(times, [t0 + 0.2, t1 - 0.2])
+        seg = slice(i0, i1)
+        extra = np.where((env[seg] > med[seg] * 1.12 + floor[seg]) & localmax[seg])[0]
+        cand.update((extra + i0).tolist())
+    cand = sorted(cand)
 
     freqs = np.fft.rfftfreq(WIN, 1 / SR)
     onsets = []
